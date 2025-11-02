@@ -1,136 +1,243 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
+/** ======= BASIC SETTINGS YOU CAN EDIT ======= */
+const NAME = "Loknath Roy";
+const TITLE = "Full-Stack Developer • React | Java | Spring Boot";
+const PHOTO = "/profile.jpg"; // keep your current image path or use "/profile.jpg" in public/
+const GITHUB = "https://github.com/Me-loknath-Roy";
+const LINKEDIN = "https://www.linkedin.com/in/meloknathroy/";
+const EMAIL = "me.loknathroy@gmail.com";
+const RESUME_FILE = "/Loknath_Roy_Resume.pdf"; // put the file inside /public
+/** ========================================== */
+
+const SKILLS = [
+  "React",
+  "JavaScript",
+  "HTML",
+  "CSS",
+  "Java",
+  "Spring Boot",
+  "REST APIs",
+  "Python",
+  "SQLite/MySQL",
+  "Git & GitHub",
+  "OpenCV",
+  "IoT",
+];
+
+const PROJECTS = [
+  {
+    title: "Face Attendance System",
+    desc:
+      "Real-time face recognition (OpenCV) + auto-training + attendance logging. Clean UI and robust pipeline.",
+    tags: ["OpenCV", "Python", "SQLite"],
+    repo: `${GITHUB}/face_attendance_system`,
+    demo: "", // add if deployed
+    image:
+      "https://images.unsplash.com/photo-1555421689-43cad7100751?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    title: "Online Voting System",
+    desc:
+      "Secure online voting with role-based access and verifiable results. Built for coursework with clean REST APIs.",
+    tags: ["Spring Boot", "REST", "JWT"],
+    repo: `${GITHUB}/online-voting-system`,
+    demo: "", // add if deployed
+    image:
+      "https://images.unsplash.com/photo-1529101091764-c3526daf38fe?q=80&w=1400&auto=format&fit=crop",
+  },
+  {
+    title: "IoT Monitoring Project",
+    desc:
+      "Sensor data ingestion + dashboard. Lightweight backend with real-time insights and alerting.",
+    tags: ["IoT", "Node/Express", "Charts"],
+    repo: `${GITHUB}/iot-project`,
+    demo: "", // add if deployed
+    image:
+      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1400&auto=format&fit=crop",
+  },
+];
+
+function Section({ id, children, className }) {
+  return (
+    <section id={id} className={`section ${className || ""}`}>
+      {children}
+    </section>
+  );
+}
+
 export default function App() {
-  const name = "Loknath Roy";
-  const title = "Full-Stack Developer • React | Java | Spring Boot";
-  const email = "me.loknathroy@gmail.com";
-  const github = "https://github.com/Me-loknath-Roy";
-  const linkedin = "https://www.linkedin.com/in/meloknathroy/";
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved || "dark";
+  });
 
-  // change this to /profile.jpg if you put your photo in public/profile.jpg
-  const photo =
-    "/profile.jpg";
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
-  const skills = [
-    "React", "JavaScript", "HTML", "CSS",
-    "Java", "Spring Boot", "REST APIs",
-    "Python", "SQLite/MySQL", "Git & GitHub"
-  ];
+  const sendMail = () => {
+    const subject = encodeURIComponent("Portfolio Contact: Hello Loknath 👋");
+    const body = encodeURIComponent(
+      `Hi ${NAME},\n\nI saw your portfolio and would like to connect.\n\nThanks,\n`
+    );
+    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+  };
 
-  const projects = [
-    {
-      title: "Face Attendance System",
-      desc: "Real-time face recognition with login, auto-training & attendance logs.",
-      stack: ["Python", "OpenCV", "scikit-learn", "SQLite"],
-      link: "#"
-    },
-    {
-      title: "Blockchain Online Voting",
-      desc: "Decentralized, tamper-proof e-voting with transparent counting.",
-      stack: ["Solidity", "Web3", "Ether.js"],
-      link: "#"
-    },
-    {
-      title: "Smart Health Prediction",
-      desc: "Predicts conditions from symptoms with a simple responsive UI.",
-      stack: ["Python", "Flask", "ML"],
-      link: "#"
-    },
-    {
-      title: "College Q&A Chatbot",
-      desc: "Answers student FAQs using classic NLP + TF-IDF ranking.",
-      stack: ["Python", "Flask", "NLP"],
-      link: "#"
-    }
-  ];
+  const navItems = useMemo(
+    () => [
+      { href: "#skills", label: "Skills" },
+      { href: "#projects", label: "Projects" },
+      { href: "#contact", label: "Contact" },
+      { href: GITHUB, label: "GitHub", external: true },
+    ],
+    []
+  );
 
   return (
-    <div className="site">
-      {/* Aurora gradient background */}
-      <div className="bg-aurora" aria-hidden />
-
-      {/* NAV */}
-      <header className="nav">
-        <div className="brand">loknath.dev</div>
-        <nav className="nav-links">
-          <a href="#skills">Skills</a>
-          <a href="#projects">Projects</a>
-          <a href="#contact">Contact</a>
-          <a className="btn btn-ghost" href={github} target="_blank" rel="noreferrer">GitHub</a>
+    <div className="wrap">
+      {/* NAVBAR */}
+      <header className="navbar glass">
+        <a href="#top" className="logo">loknath.dev</a>
+        <nav>
+          {navItems.map((n) =>
+            n.external ? (
+              <a key={n.label} href={n.href} target="_blank" rel="noreferrer">
+                {n.label}
+              </a>
+            ) : (
+              <a key={n.label} href={n.href}>
+                {n.label}
+              </a>
+            )
+          )}
+          <button
+            className="toggle"
+            title="Toggle theme"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            {theme === "dark" ? "🌙" : "☀️"}
+          </button>
         </nav>
       </header>
 
       {/* HERO */}
-      <section className="hero">
-        <div className="pfp-wrap">
-          <img src={photo} alt="Loknath" className="pfp" />
-          <span className="pfp-glow" />
+      <Section id="top" className="hero fade-up">
+        <div className="photo-shell">
+          <img src={PHOTO} alt={NAME} className="photo" />
+        </div>
+        <h1 className="title">{NAME}</h1>
+        <p className="subtitle">{TITLE}</p>
+
+        <div className="cta-row">
+          <a className="btn primary" href={LINKEDIN} target="_blank" rel="noreferrer">
+            Connect on LinkedIn
+          </a>
+          <button className="btn ghost" onClick={sendMail}>
+            Email Me
+          </button>
+          <a className="btn outline" href={RESUME_FILE} download>
+            Download Resume
+          </a>
         </div>
 
-        <h1 className="title fade-up">{name}</h1>
-        <p className="subtitle fade-up delay-1">{title}</p>
-
-        <div className="cta fade-up delay-2">
-          <a className="btn" href={linkedin} target="_blank" rel="noreferrer">Connect on LinkedIn</a>
-          <a className="btn btn-ghost" href={`mailto:${email}`}>Email Me</a>
-        </div>
-
-        {/* floating chips */}
-        <ul className="float-chips" aria-hidden>
-          {["React", "Spring", "REST", "OpenCV", "SQLite", "Git"].map((c, i) => (
-            <li key={i} style={{ animationDelay: `${i * 0.3}s` }}>{c}</li>
+        <div className="chip-row">
+          {["React", "Spring", "REST", "OpenCV", "SQLite", "Git"].map((c) => (
+            <span key={c} className="chip">
+              {c}
+            </span>
           ))}
-        </ul>
-      </section>
+        </div>
+      </Section>
 
       {/* SKILLS */}
-      <section id="skills" className="section">
-        <h2 className="section-title">Skills</h2>
-        <div className="grid chips">
-          {skills.map((s) => (
-            <span key={s} className="chip">{s}</span>
+      <Section id="skills" className="fade-up">
+        <h2 className="h2">Skills</h2>
+        <div className="skills-grid">
+          {SKILLS.map((s) => (
+            <div key={s} className="skill-pill pop">
+              {s}
+            </div>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* PROJECTS */}
-      <section id="projects" className="section">
-        <div className="section-head">
-          <h2 className="section-title">Projects</h2>
-          <a className="link" href={github} target="_blank" rel="noreferrer">View all on GitHub →</a>
-        </div>
-
-        <div className="grid cards">
-          {projects.map((p) => (
-            <article key={p.title} className="card hover-pop">
-              <div className="card-glass" aria-hidden />
-              <h3 className="card-title">{p.title}</h3>
-              <p className="card-desc">{p.desc}</p>
-              <div className="card-tags">
-                {p.stack.map((t) => <span key={t} className="tag">{t}</span>)}
-              </div>
-              <div className="card-actions">
-                <a className="btn btn-ghost" href={p.link} target="_blank" rel="noreferrer">Preview</a>
+      <Section id="projects" className="fade-up">
+        <h2 className="h2">Projects</h2>
+        <div className="grid">
+          {PROJECTS.map((p) => (
+            <article key={p.title} className="card lift">
+              <div className="card-img" style={{ backgroundImage: `url(${p.image})` }} />
+              <div className="card-body">
+                <h3 className="h3">{p.title}</h3>
+                <p className="muted">{p.desc}</p>
+                <div className="tag-row">
+                  {p.tags.map((t) => (
+                    <span key={t} className="tag">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <div className="card-actions">
+                  <a className="btn small" href={p.repo} target="_blank" rel="noreferrer">
+                    Code ↗
+                  </a>
+                  {p.demo ? (
+                    <a className="btn small ghost" href={p.demo} target="_blank" rel="noreferrer">
+                      Live Demo ↗
+                    </a>
+                  ) : (
+                    <button className="btn small ghost" disabled title="Demo coming soon">
+                      Live Demo ⏳
+                    </button>
+                  )}
+                </div>
               </div>
             </article>
           ))}
         </div>
-      </section>
+      </Section>
 
       {/* CONTACT */}
-      <section id="contact" className="section contact">
-        <h2 className="section-title">Contact</h2>
-        <p className="contact-line">Email: <a href={`mailto:${email}`}>{email}</a></p>
-        <div className="cta">
-          <a className="btn" href={linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-          <a className="btn" href={github} target="_blank" rel="noreferrer">GitHub</a>
-        </div>
-      </section>
-
-      <footer className="footer">
-        © {new Date().getFullYear()} {name}. Built with React.
-      </footer>
+      <Section id="contact" className="fade-up">
+        <h2 className="h2">Contact</h2>
+        <p className="muted center">
+          Want to build something awesome together? Drop me a message.
+        </p>
+        <form
+          className="contact glass"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const fd = new FormData(e.currentTarget);
+            const name = fd.get("name");
+            const msg = fd.get("message");
+            const subject = encodeURIComponent(`Hello from ${name}`);
+            const body = encodeURIComponent(msg);
+            window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+          }}
+        >
+          <input name="name" placeholder="Your name" required />
+          <input name="email" placeholder="Your email (optional)" />
+          <textarea name="message" rows={4} placeholder="Message..." required />
+          <button className="btn primary wide" type="submit">
+            Send Email
+          </button>
+        </form>
+        <footer className="footer">
+          <a href={GITHUB} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          <span>•</span>
+          <a href={LINKEDIN} target="_blank" rel="noreferrer">
+            LinkedIn
+          </a>
+          <span>•</span>
+          <a href={`mailto:${EMAIL}`}>Email</a>
+        </footer>
+      </Section>
     </div>
   );
 }
